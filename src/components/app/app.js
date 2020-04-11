@@ -14,7 +14,7 @@ export default class App extends Component {
   state = {
     todoList: [],
     searchValue: '',
-    selectedFilter: 'All',
+    selectedFilter: 'all',
   };
 
   deleteItem = (id) => {
@@ -40,8 +40,14 @@ export default class App extends Component {
       };
     });
 
+    // reset search
     if (this.state.searchValue) {
-      this.onSearch(''); // reset search
+      this.onSearch('');
+    }
+
+    // reset filter
+    if (this.state.selectedFilter !== 'all') {
+      this.onFilter('all');
     }
   };
 
@@ -65,21 +71,34 @@ export default class App extends Component {
   };
 
   onSearch = (text) => {
-    this.setState(state => ({ searchValue: text }));
+    this.setState({ searchValue: text });
   };
 
-  onFilterSelect = () => {
-
+  onFilter = (selectedFilter) => {
+    this.setState({ selectedFilter });
   };
 
-  filterTodos = (todoList, searchValue) =>
-    todoList.filter(item => item.label.includes(searchValue));
+  filterTodos = (todoList, searchValue, selectedFilter) => {
+    const filteredBySearchValue =
+      todoList.filter(item => item.label.toLowerCase().includes(searchValue.toLowerCase()));
+
+    switch (selectedFilter) {
+      case 'active':
+        return filteredBySearchValue.filter(item => !item.done);
+        break;
+      case 'done':
+        return filteredBySearchValue.filter(item => item.done);
+        break;
+      default:
+        return filteredBySearchValue;
+    }
+  };
 
   render() {
-    const { todoList, searchValue } = this.state;
+    const { todoList, searchValue, selectedFilter } = this.state;
     const doneCount = todoList.filter(item => item.done).length;
     const activeCount = todoList.length - doneCount;
-    const filteredList = this.filterTodos(todoList, searchValue);
+    const filteredList = this.filterTodos(todoList, searchValue, selectedFilter);
 
     return (
       <div className="todo-app">
@@ -93,7 +112,10 @@ export default class App extends Component {
             searchValue={searchValue}
             onSearch={this.onSearch}
           />
-          <ItemStatusFilter />
+          <ItemStatusFilter
+            selectedFilter={selectedFilter}
+            onFilter={this.onFilter}
+          />
         </div>
 
         <ToDoList

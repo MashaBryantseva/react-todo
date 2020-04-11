@@ -1,13 +1,27 @@
 import React, { Component } from 'react';
 
-export default class ItemStatusFilter extends Component {
-  render() {
-    return (
-      <div className="btn-group">
-        <button className="btn btn-info">All</button>
-        <button className="btn btn-outline-secondary">Active</button>
-        <button className="btn btn-outline-secondary">Done</button>
-      </div>
-    );
-  }
-}
+const ItemStatusFilter = ({ selectedFilter, onFilter }) => {
+  const buttons = [
+    { name: 'all', label: 'All' },
+    { name: 'active', label: 'Active' },
+    { name: 'done', label: 'Done' },
+  ];
+  
+  return (
+    <div className="btn-group">
+      {
+        buttons.map(({ name, label }) => (
+          <button
+            key={name}
+            className={`btn ${ selectedFilter === name ? 'btn-info' : 'btn-outline-secondary' }`}
+            onClick={() => onFilter(name)}
+          >
+            { label }
+          </button>
+        ))
+      }
+    </div>
+  );
+};
+
+export default ItemStatusFilter;
