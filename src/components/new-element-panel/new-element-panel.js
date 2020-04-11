@@ -36,7 +36,12 @@ export default class NewElementPanel extends Component {
           value={label}
           placeholder="Type new task name here"
         />
-        <button className="btn btn-outline-secondary">Add</button>
+        <button
+          className="btn btn-outline-secondary"
+          disabled={!label.length}
+        >
+          Add
+        </button>
       </form>
     );
   }

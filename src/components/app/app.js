@@ -12,42 +12,25 @@ import './app.css';
 
 export default class App extends Component {
   state = {
-    toDoData: [
-      {
-        id: 1,
-        label: 'Drink coffee',
-        important: false,
-        done: false,
-      },
-      {
-        id: 2,
-        label: 'Make awesome app',
-        important: false,
-        done: false,
-      },
-      {
-        id: 3,
-        label: 'Have a lunch',
-        important: false,
-        done: false,
-      },
-    ],
+    todoList: [],
+    searchValue: '',
+    selectedFilter: 'All',
   };
 
   deleteItem = (id) => {
-    this.setState(({ toDoData }) => ({
-      toDoData: toDoData.filter(item => item.id !== id),
+    this.setState(({ todoList }) => ({
+      todoList: todoList.filter(item => item.id !== id),
     }));
   };
 
   addItem = (label) => {
-    this.setState(({ toDoData }) => {
-      const ids = toDoData.map(item => item.id);
-      const maxId = ids.length ? Math.max(...ids) : 1;
+    this.setState(({ todoList }) => {
+      const ids = todoList.map(item => item.id);
+      const maxId = ids.length ? Math.max(...ids) : 0;
 
       return {
-        toDoData: [
-          ...toDoData,
+        todoList: [
+          ...todoList,
           {
             label,
             id: maxId + 1,
@@ -56,11 +39,15 @@ export default class App extends Component {
         ],
       };
     });
+
+    if (this.state.searchValue) {
+      this.onSearch(''); // reset search
+    }
   };
 
   toggleItemProp = (id, propName) => {
-    this.setState(({ toDoData }) => ({
-      toDoData: toDoData.map(item => ({
+    this.setState(({ todoList }) => ({
+      todoList: todoList.map(item => ({
         ...item,
         ...(item.id === id && ({
           [propName]: !item[propName],
@@ -77,24 +64,45 @@ export default class App extends Component {
     this.toggleItemProp(id, 'important');
   };
 
+  onSearch = (text) => {
+    this.setState(state => ({ searchValue: text }));
+  };
+
+  onFilterSelect = () => {
+
+  };
+
+  filterTodos = (todoList, searchValue) =>
+    todoList.filter(item => item.label.includes(searchValue));
+
   render() {
-    const { toDoData } = this.state;
-    const doneCount = toDoData.filter(item => item.done).length;
-    const activeCount = toDoData.length - doneCount;
+    const { todoList, searchValue } = this.state;
+    const doneCount = todoList.filter(item => item.done).length;
+    const activeCount = todoList.length - doneCount;
+    const filteredList = this.filterTodos(todoList, searchValue);
 
     return (
       <div className="todo-app">
-        <AppHeader activeCount={activeCount} doneCount={doneCount} />
+        <AppHeader
+          activeCount={activeCount}
+          doneCount={doneCount}
+        />
+
         <div className="top-panel d-flex justify-content-between align-items-center">
-          <SearchPanel />
+          <SearchPanel
+            searchValue={searchValue}
+            onSearch={this.onSearch}
+          />
           <ItemStatusFilter />
         </div>
+
         <ToDoList
-          todos={toDoData}
+          todos={filteredList}
           onDeleted={this.deleteItem}
           onToggleItemDone={this.onToggleItemDone}
           onToggleItemImportant={this.onToggleItemImportant}
         />
+
         <NewElementPanel addItem={this.addItem} />
       </div>
     );
