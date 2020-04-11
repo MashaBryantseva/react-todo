@@ -6,7 +6,7 @@ const ItemStatusFilter = ({ selectedFilter, onFilter }) => {
     { name: 'active', label: 'Active' },
     { name: 'done', label: 'Done' },
   ];
-  
+
   return (
     <div className="btn-group">
       {

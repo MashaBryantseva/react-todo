@@ -2,7 +2,7 @@ import React from 'react';
 
 import './todo-list-item.css';
 
-function ToDoListItem(props) {
+const ToDoListItem = (props) => {
   const {
     label,
     important,
@@ -11,7 +11,6 @@ function ToDoListItem(props) {
     onToggleItemDone,
     onToggleItemImportant,
   } = props;
-
   const classNames = `todo-list-item ${done && 'done'} ${important && 'important'}`;
 
   return (
@@ -38,6 +37,6 @@ function ToDoListItem(props) {
       </button>
     </span>
   );
-}
+};
 
 export default ToDoListItem;
