@@ -58,26 +58,23 @@ export default class App extends Component {
     });
   };
 
-  onToggleItemDone = (id) => {
+  toggleItemProp = (id, propName) => {
     this.setState(({ toDoData }) => ({
       toDoData: toDoData.map(item => ({
         ...item,
         ...(item.id === id && ({
-          done: !item.done,
+          [propName]: !item[propName],
         }))
       })),
     }));
   };
 
+  onToggleItemDone = (id) => {
+    this.toggleItemProp(id, 'done');
+  };
+
   onToggleItemImportant = (id) => {
-    this.setState(({ toDoData }) => ({
-      toDoData: toDoData.map(item => ({
-        ...item,
-        ...(item.id === id && ({
-          important: !item.important,
-        }))
-      }))
-    }));
+    this.toggleItemProp(id, 'important');
   };
 
   render() {
